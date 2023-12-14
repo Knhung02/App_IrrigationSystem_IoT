@@ -1,33 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     Text,
     View,
     Image,
     TouchableOpacity,
-    TextInput,
-    FlatList,
-    ScrollView,
     Switch,
-    SafeAreaView,
     ImageBackground,
 } from 'react-native'
-import { images, icons, fontSizes } from '../constants'
+import { images, fontSizes } from '../constants'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { UIHeader } from '../components';
-import { auth, firebaseDatabase, firebaseDatabaseRef } from '../firebase/firebase'
-import { StackActions } from '@react-navigation/native'
 import { isIOS } from '../utilies/Device';
 import colors from '../constants/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 function Settings({ navigation }) {
     const [isEnabledLockApp, setEnabledLockApp] = useState(true)
     const [isUseFingerprint, setUseFingerprint] = useState(false)
-    const [isEnabledChangePassword, setEnabledChangePassword] = useState(true)
+    // Hàm đăng xuất
+    const handleLogout = async () => {
+        // Xóa AccessToken từ AsyncStorage
+        await AsyncStorage.removeItem('accessToken');
 
-    // //navigation
-    // const { navigation, route } = props
-    // //functions of navigate to/back
-    // const { navigate, goBack } = navigation
-
+        // Đưa người dùng đến màn hình đăng nhập (hoặc màn hình chính của ứng dụng)
+        navigation.navigate('Welcome');
+    };
     return (
         <View style={{
             flex: 100,
@@ -63,7 +58,7 @@ function Settings({ navigation }) {
                             fontSize: fontSizes.h1,
                             marginLeft: 20,
                             alignSelf: 'center',
-                            alignContent: 'center'
+                            alignContent: 'center',
                         }}>
                             Settings
                         </Text>
@@ -82,36 +77,33 @@ function Settings({ navigation }) {
                         <Text style={{
                             color: 'black',
                             fontSize: fontSizes.h4,
-                            // color: 'red', 
                             paddingStart: 10,
                         }}>Common</Text>
                     </View>
                     <View style={{
                         flexDirection: 'row',
                         paddingVertical: 10,
-                        alignItems: 'center'
+                        alignItems: 'center',
                     }}>
                         <Icon
-                            name='globe'
+                            name="globe"
                             style={{ marginStart: 10 }}
                             size={20} color={'black'}
                         />
                         <Text style={{
                             color: 'black',
                             fontSize: fontSizes.h5,
-                            // color: 'black', 
                             paddingStart: 10,
                         }}>Language</Text>
                         <View style={{ flex: 1 }} />
                         <Text style={{
                             color: 'black',
                             fontSize: fontSizes.h5,
-                            // color: 'black', 
                             paddingEnd: 10,
                             opacity: 0.5,
                         }}>English</Text>
                         <Icon
-                            name='chevron-right'
+                            name="chevron-right"
                             style={{
                                 paddingEnd: 10,
                                 opacity: 0.5,
@@ -122,29 +114,22 @@ function Settings({ navigation }) {
                     <View style={{
                         flexDirection: 'row',
                         paddingVertical: 10,
-                        alignItems: 'center'
+                        alignItems: 'center',
                     }}>
                         <Icon
-                            name='bell'
+                            name="bell"
                             style={{ marginStart: 10 }}
+
                             size={20} color={'black'}
                         />
                         <Text style={{
                             color: 'black',
                             fontSize: fontSizes.h5,
-                            // color: 'black', 
                             paddingStart: 10,
                         }}>Notifications</Text>
                         <View style={{ flex: 1 }} />
-                        {/* <Text style={{
-                            color: 'black',
-                            fontSize: fontSizes.h6,
-                            // color: 'black', 
-                            paddingEnd: 10,
-                            opacity: 0.5,
-                        }}>Production</Text> */}
                         <Icon
-                            name='chevron-right'
+                            name="chevron-right"
                             style={{
                                 paddingEnd: 10,
                                 opacity: 0.5,
@@ -161,7 +146,6 @@ function Settings({ navigation }) {
                         <Text style={{
                             color: 'black',
                             fontSize: fontSizes.h4,
-                            // color: 'red', 
                             paddingStart: 10,
                         }}>Account</Text>
                     </View>
@@ -169,22 +153,21 @@ function Settings({ navigation }) {
                     <View style={{
                         flexDirection: 'row',
                         paddingVertical: 10,
-                        alignItems: 'center'
+                        alignItems: 'center',
                     }}>
                         <Icon
-                            name='envelope'
+                            name="envelope"
                             style={{ marginStart: 10 }}
                             size={16} color={'black'}
                         />
                         <Text style={{
                             color: 'black',
                             fontSize: fontSizes.h5,
-                            // color: 'black', 
                             paddingStart: 10,
                         }}>Email</Text>
                         <View style={{ flex: 1 }} />
                         <Icon
-                            name='chevron-right'
+                            name="chevron-right"
                             style={{
                                 paddingEnd: 10,
                                 opacity: 0.5,
@@ -192,27 +175,30 @@ function Settings({ navigation }) {
                             size={20} color={'black'}
                         />
                     </View>
-                    <TouchableOpacity style={{
-                        flexDirection: 'row',
-                        paddingVertical: 10,
-                        alignItems: 'center',
-                    }} onPress={() => {
-                        navigation.navigate('Welcome')
-                    }}>
+                    <TouchableOpacity
+                        style={{
+                            flexDirection: 'row',
+                            paddingVertical: 10,
+                            alignItems: 'center',
+                        }}
+                        // onPress={() => {
+                        //     navigation.navigate('Welcome')
+                        // }}
+                        onPress={handleLogout}
+                    >
                         <Icon
-                            name='sign-out-alt'
+                            name="sign-out-alt"
                             style={{ marginStart: 10 }}
                             size={16} color={'black'}
                         />
                         <Text style={{
                             color: 'black',
                             fontSize: fontSizes.h5,
-                            // color: 'black', 
                             paddingStart: 10,
                         }}>Sign out</Text>
                         <View style={{ flex: 1 }} />
                         <Icon
-                            name='chevron-right'
+                            name="chevron-right"
                             style={{
                                 paddingEnd: 10,
                                 opacity: 0.5,
@@ -229,24 +215,22 @@ function Settings({ navigation }) {
                         <Text style={{
                             color: 'black',
                             fontSize: fontSizes.h4,
-                            // color: 'red', 
                             paddingStart: 10,
                         }}>Security</Text>
                     </View>
                     <View style={{
                         flexDirection: 'row',
                         paddingVertical: 10,
-                        alignItems: 'center'
+                        alignItems: 'center',
                     }}>
                         <Icon
-                            name='door-closed'
+                            name="door-closed"
                             style={{ marginStart: 10 }}
                             size={16} color={'black'}
                         />
                         <Text style={{
                             color: 'black',
                             fontSize: fontSizes.h5,
-                            // color: 'black', 
                             paddingStart: 10,
                         }}>Lock app in background</Text>
                         <View style={{ flex: 1 }} />
@@ -264,17 +248,16 @@ function Settings({ navigation }) {
                     <View style={{
                         flexDirection: 'row',
                         paddingVertical: 10,
-                        alignItems: 'center'
+                        alignItems: 'center',
                     }}>
                         <Icon
-                            name='fingerprint'
+                            name="fingerprint"
                             style={{ marginStart: 10 }}
                             size={16} color={'black'}
                         />
                         <Text style={{
                             color: 'black',
                             fontSize: fontSizes.h5,
-                            // color: 'black', 
                             paddingStart: 10,
                         }}>Use fingerprint</Text>
                         <View style={{ flex: 1 }} />
@@ -291,22 +274,21 @@ function Settings({ navigation }) {
                     <View style={{
                         flexDirection: 'row',
                         paddingVertical: 10,
-                        alignItems: 'center'
+                        alignItems: 'center',
                     }}>
                         <Icon
-                            name='lock'
+                            name="lock"
                             style={{ marginStart: 10 }}
                             size={16} color={'black'}
                         />
                         <Text style={{
                             color: 'black',
                             fontSize: fontSizes.h5,
-                            // color: 'black', 
                             paddingStart: 10,
                         }}>Change password</Text>
                         <View style={{ flex: 1 }} />
                         <Icon
-                            name='chevron-right'
+                            name="chevron-right"
                             style={{
                                 paddingEnd: 10,
                                 opacity: 0.5,
@@ -322,7 +304,7 @@ function Settings({ navigation }) {
                     }}>
                         <Text style={{
                             color: 'black',
-                            fontSize: fontSizes.h4, 
+                            fontSize: fontSizes.h4,
                             paddingStart: 10,
                         }}>Mode</Text>
                     </View>
@@ -343,12 +325,10 @@ function Settings({ navigation }) {
                         <Text style={{
                             color: 'black',
                             fontSize: fontSizes.h5,
-                            // color: 'black', 
-                            // paddingStart: 10,
                         }}>Automation</Text>
                         <View style={{ flex: 1 }} />
                         <Icon
-                            name='chevron-right'
+                            name="chevron-right"
                             style={{
                                 paddingEnd: 10,
                                 opacity: 0.5,
@@ -359,7 +339,7 @@ function Settings({ navigation }) {
                     <View style={{
                         flexDirection: 'row',
                         paddingVertical: 10,
-                        alignItems: 'center'
+                        alignItems: 'center',
                     }}>
                         <Image
                             source={images.customize}
@@ -373,23 +353,18 @@ function Settings({ navigation }) {
                         <Text style={{
                             color: 'black',
                             fontSize: fontSizes.h5,
-                            // color: 'black', 
-                            // paddingStart: 10,
                         }}>Manual</Text>
                         <View style={{ flex: 1 }} />
                         <Icon
-                            name='chevron-right'
+                            name="chevron-right"
                             style={{
                                 paddingEnd: 10,
                                 opacity: 0.5,
                             }}
                             size={20} color={'black'}
                         />
-
                     </View>
                 </View>
-
-                {/* </ScrollView> */}
             </ImageBackground>
         </View>
     )

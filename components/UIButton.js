@@ -3,13 +3,13 @@ import { Text, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 function UIButton(props) {
-    const {onPress, title, style, disabled} = props
+    const {onPress, title, style,error} = props
   return (
     <TouchableOpacity
         // onPress={props.onPress}
         onPress={onPress}
-        disabled={disabled}
         style={style}
+        error = {error}
        >
 
           <Text style={{

@@ -4,7 +4,7 @@ import { Image, ImageBackground, KeyboardAvoidingView, Platform, Text, TextInput
 import { images, fontSizes } from '../constants';
 import UIButton from '../components/UIButton';
 
-function Welcome({navigation}) {
+function Welcome({ navigation }) {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 100 }}>
@@ -16,7 +16,7 @@ function Welcome({navigation}) {
           flex: 100,
         }}
       >
-        <View style={{flex:30}}/>
+        <View style={{ flex: 30 }} />
         <View style={{
           flex: 10,
           // backgroundColor: 'orange',
@@ -24,22 +24,23 @@ function Welcome({navigation}) {
           justifyContent: 'center',
         }}>
           <Image source={images.logo} style={{
-            height:  100,
+            height: 100,
             width: 100,
           }} />
           <Text style={{
-            marginTop:10,
+            marginTop: 10,
             marginBottom: 10,
             fontSize: fontSizes.h1,
-            color: '#6c4da5',
+            color: '#5c19a9',
           }}>Welcome to</Text>
           <Text style={{
             fontWeight: 'bold',
             fontSize: fontSizes.h1,
-            color: '#6c4da5',
+            // color: '#5c1986',
+            color: '#5d25a6'
           }}>IRRIGATION SYSTEM</Text>
         </View>
-        <View style={{flex:20}}/>
+        <View style={{ flex: 20 }} />
         <View style={{
           flex: 40,
           alignItems: 'center',
@@ -47,7 +48,7 @@ function Welcome({navigation}) {
 
           <UIButton
             // disabled={isValidationOK() == false}
-            title={'Sign In'.toUpperCase()}
+            title={'SIGN IN'.toUpperCase()}
             style={{
               borderColor: 'white',
               borderWidth: 1,
@@ -55,13 +56,22 @@ function Welcome({navigation}) {
               borderRadius: 25,
               alignItems: 'center',
               backgroundColor: '#a695e1',
-              marginBottom:20,
+              marginBottom: 20,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 1,
+              },
+              shadowOpacity: 0.22,
+              shadowRadius: 2.22,
+
+              elevation: 3,
             }}
             onPress={() => {
               navigation.navigate('Login')
             }}
           />
-            <UIButton
+          <UIButton
             // disabled={isValidationOK() == false}
             title={'Sign Up'.toUpperCase()}
             style={{
@@ -71,9 +81,18 @@ function Welcome({navigation}) {
               borderRadius: 25,
               alignItems: 'center',
               backgroundColor: '#a695e1',
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 1,
+              },
+              shadowOpacity: 0.22,
+              shadowRadius: 2.22,
+
+              elevation: 3,
             }}
             onPress={() => {
-              navigation.navigate('Login')
+              navigation.navigate('Register')
             }}
           />
           {/* <Text style={{

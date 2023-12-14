@@ -1,190 +1,157 @@
 import React, { useState } from 'react';
-import { Image, ImageBackground, KeyboardAvoidingView, Platform, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { icon, images, fontSizes } from '../constants';
+import { ImageBackground, ScrollView, Text, View } from 'react-native';
+import { images, fontSizes } from '../constants';
 import UIButton from '../components/UIButton';
 import colors from '../constants/colors';
-import { isValidEmail, isValidPassword } from '../utilies/Validation';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Input from '../components/Input';
 
 function Register({ navigation }) {
-    //state => when a state is changed => UI is reloaded
-    //use Effect()
-    //states for validating
-    const [errorEmail, setErrorEmail] = useState('')
-    const [errorPassword, setErrorPassword] = useState('')
-    const [errors, setErrors] = useState('')
-    //states to store email/password
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [name, setName] = useState('')
-    const isValidationOK = () => email.length > 0 && password.length > 0 && name.length > 0
-      && isValidEmail(email) === true
-      && isValidPassword(password) === true
+  //state => when a state is changed => UI is reloaded
+  //use Effect()
+  //states for validating
+  const [inputs, setInputs] = React.useState({
+    email: '',
+    name: '',
+    password: '',
+  });
+  const [errors, setErrors] = useState({})
+  const [errorSubmit, setErrorSubmit] = useState('')
 
+  const validate = () => {
+    let isValid = true;
 
+    if (!inputs.email) {
+      handleError('Please enter email!', 'email');
+      isValid = false;
+    } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
+      handleError('Please enter a valid email!', 'email');
+      isValid = false;
+    }
 
-    const handleRegister = async () => {
-      try {
-        const response = await axios.post('http://localhost:3000/auth/register', {
-          email,
-          password,
-          name,
-        });
-        
-        // console.log(response.data)
-            const Username  = response.data.data.name;
-      // Store the token securely on the device
-      await AsyncStorage.setItem('Username', Username);
-        navigation.navigate('Login');
-      } catch (error) {
-        // console.error('Login failed', error.response.data.message );
-        // throw error.response.data.message
-        setErrors(error.response.data.message)
+    if (!inputs.name) {
+      handleError('Please enter name!', 'name');
+      isValid = false;
+    }
+
+    if (!inputs.password) {
+      handleError('Please enter password!', 'password');
+      isValid = false;
+    } else if (inputs.password.length < 6) {
+      handleError('Password must be at least 6 character', 'password');
+      isValid = false;
+    }
+
+    if (isValid) {
+      handleRegister();
+    }
+  };
+  const handleOnchange = (text, input) => {
+    setInputs(prevState => ({ ...prevState, [input]: text }));
+  };
+  const handleError = (error, input) => {
+    setErrors(prevState => ({ ...prevState, [input]: error }));
+  };
+
+  const handleRegister = async () => {
+    try {
+      const data = {
+        name: inputs.name,
+        email: inputs.email,
+        password: inputs.password,
       }
-    };
-    return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 100 }}>
-        {/* <SafeAreaView style={{flex:100}}> */}
-        <ImageBackground
-          source={images.background}
-          resizeMode="cover"
-          style={{
-            flex: 100,
-          }}
-        >
+      await axios.post('http://localhost:3000/auth/register', data);
+      // console.log(response.data)
+      navigation.navigate('Login');
+    } catch (error) {
+      // console.error('Login failed', error.response.data.message );
+      // throw error.response.data.message
+      setErrorSubmit(error.response.data.message)
+    }
+  };
+  return (
+    <View style={{ flex: 100 }}>
+      <ImageBackground
+        source={images.background}
+        resizeMode="cover"
+        style={{
+          flex: 1,
+        }}
+      >
+        <ScrollView contentContainerStyle={{ paddingTop: '40%', flexGrow: 1 }}>
+          <Text style={{
+            fontWeight: 'bold',
+            fontSize: 30,
+            color: '#5c27a9',
+            textAlign: 'center',
+            marginVertical: 40,
+          }}>Create account</Text>
           <View style={{
-            flex: 50,
-            // backgroundColor: 'orange',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderTopLeftRadius: 50, borderTopRightRadius: 50,
+            // flex: 65,
+            // alignItems: 'center',
+            width: '70%',
+            marginHorizontal: 60,
           }}>
-            <Image source={images.logo} style={{
-              height: 90,
-              width: 90,
-            }} />
-            <Text style={{
-              marginBottom: 7,
-              fontSize: fontSizes.h1,
-              color: '#0e5529',
-            }}>Welcome to</Text>
-            <Text style={{
-              fontWeight: 'bold',
-              fontSize: fontSizes.h1,
-              color: '#0e5529',
-            }}>IRRIGATION SYSTEM</Text>
-          </View>
-          {/* <View style={{
-                flex: 10,
-                // backgroundColor: 'blue',
-              }} /> */}
-          <View style={{
-            flex: 50,
-            alignItems: 'center',
-            // backgroundColor: 'pink',
-          }}>
-            <View style={{
-              // flex:30,
-              marginHorizontal: 20,
-              // backgroundColor:'pink',
-              width: '70%',
-            }}>
-              <TextInput
-                onChangeText={(text) => {
-                  setErrorEmail(isValidEmail(text) === true ? ' ' : 'Email is Not Correct Format')
-                  setEmail(text)
-                }}
-                placeholder="Email"
-                placeholderTextColor={colors.placeholder}
-                style={{
-                  borderRadius: 30,
-                  borderColor: 'white',
-                  borderWidth: 1,
-                  backgroundColor: '#74b848',
-                  paddingVertical: 0,
-                  height: 40,
-                  padding: 20,
-                }}
-              />
-              {/* </View> */}
-              <Text
-                style={{ color: 'red' }}>{errorEmail}
-              </Text>
-              <TextInput
-                onChangeText={(text) => {
-                  setErrorPassword(isValidPassword(text) === true ? '' : 'Password must be at least 6 character')
-                  setPassword(text)
-                }}
-                secureTextEntry={true}
-                placeholder="PASSWORD"
-                placeholderTextColor={colors.placeholder}
-                style={{
-                  backgroundColor: '#74b848',
-                  borderRadius: 30,
-                  borderColor: 'white',
-                  borderWidth: 1,
-                  paddingVertical: 0,
-                  height: 40,
-                  padding: 20,
-                }}
-              />
-              <TextInput
-                onChangeText={(text) => {
-                  // setErrorPassword(isValidationOK() === true ? '' : 'Please Enter your name!')
-                  setName(text)
-                }}
-                secureTextEntry={true}
-                placeholder="NAME"
-                placeholderTextColor={colors.placeholder}
-                style={{
-                  backgroundColor: '#74b848',
-                  borderRadius: 30,
-                  borderColor: 'white',
-                  borderWidth: 1,
-                  paddingVertical: 0,
-                  height: 40,
-                  padding: 20,
-                }}
-              />
-              {/* </View> */}
-              <Text
-                style={{ color: 'red' }}>{errorPassword}
-              </Text>
-              <Text
-                style={{ color: 'red' }}>{errors}
-              </Text>
-             
-              <Text
-                style={{ color: 'red' }}>{errorPassword}
-              </Text>
-            </View>
-            <UIButton
-              disabled={isValidationOK() == false}
-              title={'Sign Up'.toUpperCase()}
-              style={{
-                borderColor: 'white',
-                borderWidth: 1,
-                width: '50%',
-                borderRadius: 25,
-                alignItems: 'center',
-                backgroundColor: isValidationOK() === true ? colors.primary : colors.inactive,
-              }}
-              onPress={handleRegister}
+            <Input
+              onChangeText={text => handleOnchange(text, 'name')}
+              onFocus={() => handleError(null, 'name')}
+              iconName="user"
+              placeholder="Enter your name"
+              error={errors.name}
             />
-            <Text style={{
-              fontSize: fontSizes.h4,
-              alignSelf: 'center',
-              color: '#0e5529',
-            }}>Want to register new Account ?
-            </Text>
+            <Input
+              onChangeText={text => handleOnchange(text, 'email')}
+              onFocus={() => handleError(null, 'email')}
+              iconName="mail"
+              label="Email"
+              placeholder="Enter your email address"
+              error={errors.email}
 
+            />
+            <Input
+              onChangeText={text => handleOnchange(text, 'password')}
+              onFocus={() => handleError(null, 'password')}
+              iconName="lock"
+              label="Password"
+              placeholder="Enter your password"
+              error={errors.password}
+              password
+            />
           </View>
-        </ImageBackground>
-        {/* </SafeAreaView> */}
-      </KeyboardAvoidingView>
-    );
+          <Text
+            style={{ color: 'red', textAlign: 'center' }}>{errorSubmit}
+          </Text>
+          <UIButton
+            title={'Sign Up'.toUpperCase()}
+            style={{
+              borderColor: 'white',
+              borderWidth: 1,
+              width: '50%',
+              borderRadius: 25,
+              alignItems: 'center',
+              marginVertical: 30,
+              alignSelf: 'center',
+              backgroundColor: colors.primary,
+            }}
+            onPress={validate}
+          />
+          <Text style={{ color: '#39364b', fontSize: fontSizes.h5, textAlign: 'center' }}>Already have an account?</Text>
+
+          <Text
+            onPress={() => {
+              navigation.navigate('Login');
+            }}
+            style={{ marginTop: 3, color: '#5c27a9', fontSize: fontSizes.h5, textAlign: 'center' }}>
+            Sign In now
+          </Text>
+
+          {/* </View> */}
+        </ScrollView>
+      </ImageBackground>
+
+    </View>
+  );
 }
 
 export default Register

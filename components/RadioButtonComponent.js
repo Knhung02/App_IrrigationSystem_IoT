@@ -10,7 +10,7 @@ const RadioButtonComponent = () => {
   const [isSwitchOn, setIsSwitchOn] = useState(false);
 
   useEffect(() => {
-    sendPatchRequest({setMode: 0 });
+    sendPatchRequest({ setMode: 0 });
   }, []);
   const handleRadioButtonPress = (option) => {
     // setSelectedOption(option);
@@ -27,23 +27,20 @@ const RadioButtonComponent = () => {
     setSelectedOption(option);
     setIsSwitchOn(option === 'OptionA');
     // Call the function to send the PATCH request with the numeric value
-    sendPatchRequest({setPump:false, setMode: numericValue });
+    sendPatchRequest({ setPump: false, setMode: numericValue });
 
   };
   const handleSwitchToggle = () => {
     // Update the switch state
     setIsSwitchOn(!isSwitchOn);
-    // Call the function to send the PATCH request
-    // sendPatchRequest(!isSwitchOn);
+
     // Call the function to send the PATCH request
     sendPatchRequest({ setPump: !isSwitchOn, setMode: selectedOption === 'OptionA' ? 0 : 1 });
   };
 
   const sendPatchRequest = async (data) => {
     try {
-      // Make a PATCH request using Axios
-      // https://dmbe-api.industry.com.vn/api/iot
-      const response = await axios.patch('http://localhost:3000/irrigation/',data);
+      const response = await axios.patch('http://localhost:3000/irrigation/', data);
 
       // Handle the response if needed
       console.log('Patch request successful', response.data);
@@ -81,16 +78,8 @@ const RadioButtonComponent = () => {
             thumbColor="white"
             style={isIOS() ? styles.switchIOS : styles.switchAndroid}
           />
-          {/* <Text>Pump ON/OFF</Text> */}
         </View>
       )}
-
-      {/* Display details based on the selected option */}
-      {/* {selectedOption && (
-        <View style={styles.detailsContainer}>
-          <Text>Details for {selectedOption}</Text>
-        </View>
-      )} */}
     </View>
   );
 };

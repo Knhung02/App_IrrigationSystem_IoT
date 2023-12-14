@@ -1,8 +1,7 @@
 
 import * as React from 'react';
 import { View, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import { Login, Main, Profile, Register, Welcome } from '../Screens';
 import 'react-native-gesture-handler'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -17,8 +16,9 @@ const screenOptions = ({route})=>({
     tabBarInactiveTintColor: colors.inactive,
     tabBarActiveBackgroundColor: colors.primary,
     tabBarInactiveBackgroundColor: colors.primary,
+
     tabBarBackground: () => (
-        <View style={{backgroundColor: colors.primary, flex: 1}}/>
+        <View style={{backgroundColor: colors.primary, flex: 1,}}/>
       ),
     tabBarIcon: ({focused, color,size})=>{
         let screenName = route.name
@@ -30,7 +30,9 @@ const screenOptions = ({route})=>({
         // } else if (screenName === 'Welcome') {
         //     iconName = 'cogs'
         // }
-        const iconName = screenName === 'Main' ? 'home' : (screenName === 'Settings' ? 'cogs' : (screenName === 'Welcome' ? 'cogs' : ''))
+        // const iconName = screenName === 'Main' ? 'home' : (screenName === 'Settings' ? 'cogs' : (screenName === 'Welcome' ? 'cogs' : ''))
+        const iconName = screenName === 'Main' ? 'home' : (screenName === 'Settings' ? 'cogs'  : '')
+
         return (
             <Icon
                 name={iconName}
@@ -64,17 +66,6 @@ function UITab() {
                     },
                 }}
                 />
-            {/* <Tab.Screen
-                name={'Welcome'}
-                component={Welcome}
-                options={{
-                    tabBarLabel:'Setting',
-                    tabBarLabelStyle:{
-                        fontSize: fontSizes.h5,
-                    },
-                }}
-            /> */}
-
         </Tab.Navigator>
   )
 }

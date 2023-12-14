@@ -25,9 +25,14 @@ function Main(props) {
     return () => clearInterval(intervalId);
   }, []);
   const getFromStorage = async () => {
-    AsyncStorage.getItem('username')
+    // const username = await AsyncStorage.getItem('username');
+
+    // setUserName(username);
+
+    await AsyncStorage.getItem('username')
       .then((value) => {
         if (value !== null) {
+          value = JSON.parse(value);
           setUsername(value);
         }
       })
